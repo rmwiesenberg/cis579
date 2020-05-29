@@ -1,5 +1,4 @@
-from typing import NamedTuple, Tuple, List
-
+from typing import Tuple, List
 
 class Node:
     """
