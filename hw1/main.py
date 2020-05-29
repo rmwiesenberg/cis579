@@ -101,16 +101,84 @@ def breadth_first_search():
     if not first_goal_path:
         print("Did not find goal node")
     else:
+        print(f"{len(visited_nodes)} nodes checked")
         print(f"Final path: {first_goal_path}")
     print("End breadth-first")
+
+
+def depth_first_search():
+    print("Begin depth-first")
+    visited_nodes = []
+    paths_to_check = [[start_state]]
+
+    first_goal_path = None
+    while paths_to_check:
+        path = paths_to_check.pop()
+        most_recent_node = path[-1]
+        if most_recent_node in visited_nodes:
+            continue
+        print(f"Checking {most_recent_node}")
+        visited_nodes.append(most_recent_node)
+        if most_recent_node == goal_state:
+            first_goal_path = path
+            print(f"Found goal node {most_recent_node}")
+            break
+        for attached_node in most_recent_node.attached_nodes:
+            if attached_node not in visited_nodes:
+                paths_to_check.append(path + [attached_node])
+    if not first_goal_path:
+        print("Did not find goal node")
+    else:
+        print(f"{len(visited_nodes)} nodes checked")
+        print(f"Final path: {first_goal_path}")
+    print("End depth-first")
 
 
 def astar_search():
     print("Begin A*")
 
+    def h(node: Node) -> float:
+        # divided by 2 to provide consistency
+        return ((3 - node.target_state[0])
+                + (3 - node.target_state[1])) / 2
+
+    visited_nodes = []
+
+    # each path: (path_so_far, accumulated_code)
+    paths_to_check = [([start_state], 0)]
+
+    first_goal_path = None
+    while paths_to_check:
+        path, path_cost = paths_to_check.pop(0)
+        most_recent_node = path[-1]
+        if most_recent_node in visited_nodes:
+            continue
+        print(f"Checking {most_recent_node}: "
+              f"p = {path_cost}: "
+              f"h = {h(most_recent_node)}")
+        visited_nodes.append(most_recent_node)
+        if most_recent_node == goal_state:
+            first_goal_path = path
+            print(f"Found goal node {most_recent_node}")
+            break
+        for attached_node in most_recent_node.attached_nodes:
+            if attached_node not in visited_nodes:
+                paths_to_check.append((path + [attached_node], path_cost + 1))
+        paths_to_check = sorted(
+            paths_to_check,
+            key=lambda x: x[1] + h(x[0][-1])
+        )
+    if not first_goal_path:
+        print("Did not find goal node")
+    else:
+        print(f"{len(visited_nodes)} nodes checked")
+        print(f"Final path: {first_goal_path}")
     print("End A*")
 
 
 if __name__ == "__main__":
     breadth_first_search()
+    print("----------")
+    depth_first_search()
+    print("----------")
     astar_search()
