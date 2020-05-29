@@ -1,5 +1,6 @@
 from typing import Tuple, List
 
+
 class Node:
     """
     Node representing the river's state at a given point
